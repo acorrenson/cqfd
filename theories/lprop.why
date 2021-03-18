@@ -12,14 +12,14 @@ theory Lprop
     | Impl l0 l0
     | Bot
 
-  let rec eqb (x y : l0) : bool
+  let rec (==) (x y : l0) : bool
     ensures { x = y <-> result = True }
     variant { x, y }
   = match x, y with
     | Atom n, Atom m -> n = m
-    | And a b, And a' b' -> eqb a a' && eqb b b'
-    | Or a b, Or a' b' -> eqb a a' && eqb b b'
-    | Impl a b, Impl a' b' -> eqb a a' && eqb b b'
+    | And a b, And a' b'    -> a == a' && b == b'
+    | Or a b, Or a' b'      -> a == a' && b == b'
+    | Impl a b, Impl a' b'  -> a == a' && b == b'
     | Bot, Bot -> True
     | _, _ -> False
     end
