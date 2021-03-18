@@ -1,0 +1,81 @@
+
+theory Lprop
+
+  use string.String
+  use Set.Fset
+
+  type l0 =
+    | Atom string
+    | And l0 l0
+    | Or l0 l0
+    | Impl l0 l0
+    | Bot
+
+  predicate var (v : string) (f : l0) 
+  = match f with
+    | Atom s    -> v = s
+    | And a b   -> var v a \/ var v b
+    | Or a b    -> var v a \/ var v b
+    | Impl a b  -> var v a \/ var v b
+    | Bot       -> false
+    end
+
+  predicate satisfy (e : fset string) (f : l0)
+  = match f with
+    | Atom s    -> mem s e
+    | And a b   -> (satisfy e a /\ satisfy e b)
+    | Or a b    -> (satisfy e a \/ satisfy e b)
+    | Impl a b  -> (satisfy e a -> satisfy e b)
+    | Bot       -> false
+    end
+
+  predicate form_satisfy (h : l0) (f : l0)
+  = forall e. satisfy e h -> satisfy e f
+
+  predicate satisfy_set (e : fset string) (g : fset l0)
+  = forall h. mem h g -> satisfy e h
+  
+  predicate set_satisfy (g : fset l0) (f : l0)
+  = forall e. satisfy_set e g -> satisfy e f
+
+  predicate sat (f : l0) = exists e : fset string. satisfy e f
+
+  goal Axiom_rule: forall g p.
+    mem p g -> set_satisfy g p
+
+  goal Eand_rule: forall g p q.
+    set_satisfy g (And p q) ->
+    set_satisfy g p /\ set_satisfy g q
+
+  goal Ior1_rule: forall g p q.
+    set_satisfy g p ->
+    set_satisfy g (Or p q)
+
+  goal Ior2_rule: forall g p q.
+    set_satisfy g q ->
+    set_satisfy g (Or p q)
+
+  goal Eor_rule: forall g p q r.
+    set_satisfy g (Or p q) ->
+    set_satisfy g (Impl p r) ->
+    set_satisfy g (Impl q r) ->
+    set_satisfy g r
+
+  goal Raa_rule: forall g p.
+    set_satisfy g (Impl (Impl p Bot) Bot) ->
+    set_satisfy g p
+
+  goal Ebot_rule: forall g p.
+    set_satisfy g Bot ->
+    set_satisfy g p
+
+  goal Eimpl_rule: forall g. forall p q : l0. 
+    set_satisfy g p ->
+    set_satisfy g (Impl p q) ->
+    set_satisfy g p
+
+  goal Iimpl_rule: forall g. forall p q : l0.
+    set_satisfy (add p g) q ->
+    set_satisfy g (Impl p q)
+
+end
