@@ -1,18 +1,20 @@
 
 theory Lprop
 
-  use int.Int
   use set.Fset
+  use string.Char
+  use mach.int.Int63
 
   type l0 =
-    | Atom int
+    | Atom int63
     | And l0 l0
     | Or l0 l0
     | Impl l0 l0
     | Bot
 
-  let rec function eqb (x y : l0) : bool
+  let rec eqb (x y : l0) : bool
     ensures { x = y <-> result = True }
+    variant { x, y }
   = match x, y with
     | Atom n, Atom m -> n = m
     | And a b, And a' b' -> eqb a a' && eqb b b'
@@ -31,7 +33,7 @@ theory Lprop
     | Bot       -> false
     end
 
-  predicate satisfy (e : fset int) (f : l0)
+  predicate satisfy (e : fset int63) (f : l0)
   = match f with
     | Atom s    -> mem s e
     | And a b   -> (satisfy e a /\ satisfy e b)
@@ -43,13 +45,13 @@ theory Lprop
   predicate form_satisfy (h : l0) (f : l0)
   = forall e. satisfy e h -> satisfy e f
 
-  predicate satisfy_set (e : fset int) (g : fset l0)
+  predicate satisfy_set (e : fset int63) (g : fset l0)
   = forall h. mem h g -> satisfy e h
   
   predicate set_satisfy (g : fset l0) (f : l0)
   = forall e. satisfy_set e g -> satisfy e f
 
-  predicate sat (f : l0) = exists e : fset int. satisfy e f
+  predicate sat (f : l0) = exists e : fset int63. satisfy e f
 
   goal Axiom_rule: forall g p.
     mem p g -> set_satisfy g p

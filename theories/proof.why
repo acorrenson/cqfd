@@ -1,6 +1,6 @@
 theory Proof
   (* A simple theory of proofs in propositional logic *)
-  
+
   use lprop.Lprop
   use list.List
   use list.Elements
