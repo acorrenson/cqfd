@@ -1,0 +1,64 @@
+theory Proof
+  (* A theory of proofs in propositional logic *)
+  
+  use lprop.Lprop
+  use list.List
+  use list.Elements
+  use list.Mem
+
+  type proof_tree =
+    | Pr_axiom  l0
+    | Pr_Iimpl  proof_tree l0
+    | Pr_Eimpl  proof_tree proof_tree l0
+    | Pr_Ior1   proof_tree l0
+    | Pr_Ior2   proof_tree l0
+    | Pr_Eor    proof_tree proof_tree proof_tree l0
+    | Pr_Eand1  proof_tree l0
+    | Pr_Eand2  proof_tree l0
+    | Pr_Iand   proof_tree proof_tree l0
+    | Pr_RAA    proof_tree l0
+    | Pr_Ebot   proof_tree l0
+
+  let function conseq (pr : proof_tree) =
+    match pr with
+    | Pr_axiom p -> p
+    | Pr_Iimpl _ p -> p
+    | Pr_Eimpl _ _ p -> p
+    | Pr_Ior1 _ p -> p
+    | Pr_Ior2 _ p -> p
+    | Pr_Eor _ _ _ p -> p
+    | Pr_Eand1 _ p -> p
+    | Pr_Eand2 _ p -> p
+    | Pr_Iand _ _ p -> p
+    | Pr_RAA _ p -> p
+    | Pr_Ebot _ p -> p
+    end
+
+  let rec function contain (x : l0) (g : list l0) : bool
+    ensures { Mem.mem x g <-> result = True }
+    variant { g }
+  = match g with
+    | Nil -> False
+    | Cons y ys -> (eqb y x) || contain x ys
+    end
+
+  let rec check_proof (g : list l0) (pr : proof_tree)
+    ensures { result = True -> set_satisfy (Elements.elements g) (conseq pr) }
+    variant { pr }
+  = match pr with
+    | Pr_axiom p -> contain p g
+    | Pr_Iimpl prq (Impl p q) ->
+      (eqb (conseq prq) q) && (check_proof (Cons p g) prq)
+    | Pr_Eimpl pr1 pr2 p ->
+      match conseq pr1 with
+      | Impl a b ->
+        (eqb (conseq pr2) a) &&
+        (eqb p b) &&
+        (check_proof g pr1) &&
+        (check_proof g pr2)
+      | _ -> False
+      end
+    | _ -> False
+    end
+
+end
