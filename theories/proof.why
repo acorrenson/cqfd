@@ -48,14 +48,61 @@ theory Proof
   = match pr with
     | Pr_axiom p -> contain p g
     | Pr_Iimpl prq (Impl p q) ->
-      (eqb (conseq prq) q) && (check_proof (Cons p g) prq)
+      eqb (conseq prq) q &&
+      check_proof (Cons p g) prq
     | Pr_Eimpl pr1 pr2 p ->
       match conseq pr1 with
       | Impl a b ->
-        (eqb (conseq pr2) a) &&
-        (eqb p b) &&
-        (check_proof g pr1) &&
-        (check_proof g pr2)
+        eqb (conseq pr2) a &&
+        eqb p b &&
+        check_proof g pr1 &&
+        check_proof g pr2
+      | _ -> False
+      end
+    | Pr_Ior1 pr (Or a _) ->
+      eqb (conseq pr) a &&
+      check_proof g pr
+    | Pr_Ior2 pr (Or _ b) ->
+      eqb (conseq pr) b &&
+      check_proof g pr
+    | Pr_Eor pru pra prb q ->
+      match conseq pru, conseq pra, conseq prb with
+      | Or a b, Impl x cx, Impl y cy ->
+        eqb a x && eqb b y &&
+        eqb cx q && eqb cy q &&
+        check_proof g pru &&
+        check_proof g pra &&
+        check_proof g prb
+      | _ -> False
+      end
+    | Pr_Eand1 pr p ->
+      match conseq pr with
+      | And a _ ->
+        eqb a p &&
+        check_proof g pr
+      | _ -> False
+      end
+    | Pr_Eand2 pr p ->
+      match conseq pr with
+      | And _ a ->
+        eqb a p &&
+        check_proof g pr
+      | _ -> False
+      end
+    | Pr_Iand pra prb (And a b) ->
+      eqb (conseq pra) a &&
+      eqb (conseq prb) b &&
+      check_proof g pra &&
+      check_proof g prb
+    | Pr_RAA pra p ->
+      match conseq pra with
+      | Impl (Impl a Bot) Bot ->
+        eqb a p && check_proof g pra
+      | _ -> False
+      end
+    | Pr_Ebot pr _ ->
+      match conseq pr with
+      | Bot -> check_proof g pr
       | _ -> False
       end
     | _ -> False
