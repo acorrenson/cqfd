@@ -2,7 +2,6 @@
 <!DOCTYPE why3session PUBLIC "-//Why3//proof session v5//EN"
 "http://why3.lri.fr/why3session.dtd">
 <why3session shape_version="6">
-<prover id="0" name="Alt-Ergo" version="2.3.1" timelimit="1" steplimit="0" memlimit="1000"/>
 <prover id="1" name="CVC4" version="1.7" timelimit="1" steplimit="0" memlimit="1000"/>
 <file format="whyml" proved="true">
 <path name=".."/><path name="proof.why"/>
@@ -11,8 +10,132 @@
  <proof prover="1"><result status="valid" time="0.13" steps="18805"/></proof>
  </goal>
  <goal name="check_proof&#39;vc" expl="VC for check_proof" proved="true">
- <proof prover="0"><result status="valid" time="0.15" steps="1684"/></proof>
- <proof prover="1"><result status="timeout" time="1.00" steps="150432"/></proof>
+ <transf name="split_vc" proved="true" >
+  <goal name="check_proof&#39;vc.0" expl="variant decrease" proved="true">
+  <proof prover="1"><result status="valid" time="0.17" steps="19517"/></proof>
+  </goal>
+  <goal name="check_proof&#39;vc.1" expl="variant decrease" proved="true">
+  <proof prover="1"><result status="valid" time="0.18" steps="19865"/></proof>
+  </goal>
+  <goal name="check_proof&#39;vc.2" expl="variant decrease" proved="true">
+  <proof prover="1"><result status="valid" time="0.18" steps="19963"/></proof>
+  </goal>
+  <goal name="check_proof&#39;vc.3" expl="variant decrease" proved="true">
+  <proof prover="1"><result status="valid" time="0.17" steps="19443"/></proof>
+  </goal>
+  <goal name="check_proof&#39;vc.4" expl="variant decrease" proved="true">
+  <proof prover="1"><result status="valid" time="0.17" steps="19493"/></proof>
+  </goal>
+  <goal name="check_proof&#39;vc.5" expl="variant decrease" proved="true">
+  <proof prover="1"><result status="valid" time="0.19" steps="21165"/></proof>
+  </goal>
+  <goal name="check_proof&#39;vc.6" expl="variant decrease" proved="true">
+  <proof prover="1"><result status="valid" time="0.20" steps="21263"/></proof>
+  </goal>
+  <goal name="check_proof&#39;vc.7" expl="variant decrease" proved="true">
+  <proof prover="1"><result status="valid" time="0.20" steps="21297"/></proof>
+  </goal>
+  <goal name="check_proof&#39;vc.8" expl="variant decrease" proved="true">
+  <proof prover="1"><result status="valid" time="0.17" steps="19501"/></proof>
+  </goal>
+  <goal name="check_proof&#39;vc.9" expl="variant decrease" proved="true">
+  <proof prover="1"><result status="valid" time="0.16" steps="19501"/></proof>
+  </goal>
+  <goal name="check_proof&#39;vc.10" expl="variant decrease" proved="true">
+  <proof prover="1"><result status="valid" time="0.15" steps="19918"/></proof>
+  </goal>
+  <goal name="check_proof&#39;vc.11" expl="variant decrease" proved="true">
+  <proof prover="1"><result status="valid" time="0.16" steps="20016"/></proof>
+  </goal>
+  <goal name="check_proof&#39;vc.12" expl="variant decrease" proved="true">
+  <proof prover="1"><result status="valid" time="0.14" steps="19710"/></proof>
+  </goal>
+  <goal name="check_proof&#39;vc.13" expl="variant decrease" proved="true">
+  <proof prover="1"><result status="valid" time="0.14" steps="18941"/></proof>
+  </goal>
+  <goal name="check_proof&#39;vc.14" expl="postcondition" proved="true">
+  <transf name="split_vc" proved="true" >
+   <goal name="check_proof&#39;vc.14.0" expl="postcondition" proved="true">
+   <proof prover="1"><result status="valid" time="0.14" steps="17397"/></proof>
+   </goal>
+   <goal name="check_proof&#39;vc.14.1" expl="postcondition" proved="true">
+   <proof prover="1"><result status="valid" time="0.32" steps="35728"/></proof>
+   </goal>
+   <goal name="check_proof&#39;vc.14.2" expl="postcondition" proved="true">
+   <proof prover="1"><result status="valid" time="0.07" steps="15085"/></proof>
+   </goal>
+   <goal name="check_proof&#39;vc.14.3" expl="postcondition" proved="true">
+   <proof prover="1"><result status="valid" time="0.16" steps="18351"/></proof>
+   </goal>
+   <goal name="check_proof&#39;vc.14.4" expl="postcondition" proved="true">
+   <proof prover="1"><result status="valid" time="0.07" steps="15093"/></proof>
+   </goal>
+   <goal name="check_proof&#39;vc.14.5" expl="postcondition" proved="true">
+   <proof prover="1"><result status="valid" time="0.15" steps="17832"/></proof>
+   </goal>
+   <goal name="check_proof&#39;vc.14.6" expl="postcondition" proved="true">
+   <proof prover="1"><result status="valid" time="0.07" steps="15085"/></proof>
+   </goal>
+   <goal name="check_proof&#39;vc.14.7" expl="postcondition" proved="true">
+   <proof prover="1"><result status="valid" time="0.15" steps="17832"/></proof>
+   </goal>
+   <goal name="check_proof&#39;vc.14.8" expl="postcondition" proved="true">
+   <proof prover="1"><result status="valid" time="0.07" steps="15085"/></proof>
+   </goal>
+   <goal name="check_proof&#39;vc.14.9" expl="postcondition" proved="true">
+   <proof prover="1"><result status="valid" time="0.18" steps="20320"/></proof>
+   </goal>
+   <goal name="check_proof&#39;vc.14.10" expl="postcondition" proved="true">
+   <proof prover="1"><result status="valid" time="0.07" steps="15145"/></proof>
+   </goal>
+   <goal name="check_proof&#39;vc.14.11" expl="postcondition" proved="true">
+   <proof prover="1"><result status="valid" time="0.07" steps="15121"/></proof>
+   </goal>
+   <goal name="check_proof&#39;vc.14.12" expl="postcondition" proved="true">
+   <proof prover="1"><result status="valid" time="0.07" steps="15097"/></proof>
+   </goal>
+   <goal name="check_proof&#39;vc.14.13" expl="postcondition" proved="true">
+   <proof prover="1"><result status="valid" time="0.15" steps="17856"/></proof>
+   </goal>
+   <goal name="check_proof&#39;vc.14.14" expl="postcondition" proved="true">
+   <proof prover="1"><result status="valid" time="0.07" steps="15089"/></proof>
+   </goal>
+   <goal name="check_proof&#39;vc.14.15" expl="postcondition" proved="true">
+   <proof prover="1"><result status="valid" time="0.15" steps="17856"/></proof>
+   </goal>
+   <goal name="check_proof&#39;vc.14.16" expl="postcondition" proved="true">
+   <proof prover="1"><result status="valid" time="0.07" steps="15089"/></proof>
+   </goal>
+   <goal name="check_proof&#39;vc.14.17" expl="postcondition" proved="true">
+   <proof prover="1"><result status="valid" time="0.16" steps="18328"/></proof>
+   </goal>
+   <goal name="check_proof&#39;vc.14.18" expl="postcondition" proved="true">
+   <proof prover="1"><result status="valid" time="0.07" steps="15089"/></proof>
+   </goal>
+   <goal name="check_proof&#39;vc.14.19" expl="postcondition" proved="true">
+   <proof prover="1"><result status="valid" time="0.16" steps="18494"/></proof>
+   </goal>
+   <goal name="check_proof&#39;vc.14.20" expl="postcondition" proved="true">
+   <proof prover="1"><result status="valid" time="0.07" steps="15146"/></proof>
+   </goal>
+   <goal name="check_proof&#39;vc.14.21" expl="postcondition" proved="true">
+   <proof prover="1"><result status="valid" time="0.07" steps="15108"/></proof>
+   </goal>
+   <goal name="check_proof&#39;vc.14.22" expl="postcondition" proved="true">
+   <proof prover="1"><result status="valid" time="0.07" steps="15139"/></proof>
+   </goal>
+   <goal name="check_proof&#39;vc.14.23" expl="postcondition" proved="true">
+   <proof prover="1"><result status="valid" time="0.06" steps="15089"/></proof>
+   </goal>
+   <goal name="check_proof&#39;vc.14.24" expl="postcondition" proved="true">
+   <proof prover="1"><result status="valid" time="0.12" steps="17531"/></proof>
+   </goal>
+   <goal name="check_proof&#39;vc.14.25" expl="postcondition" proved="true">
+   <proof prover="1"><result status="valid" time="0.06" steps="15119"/></proof>
+   </goal>
+  </transf>
+  </goal>
+ </transf>
  </goal>
 </theory>
 </file>
