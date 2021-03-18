@@ -1,11 +1,14 @@
 theory Proof
-  (* A theory of proofs in propositional logic *)
+  (* A simple theory of proofs in propositional logic *)
   
   use lprop.Lprop
   use list.List
   use list.Elements
   use list.Mem
 
+  (**
+    TODO : factorise this using structures and labels
+  *)
   type proof_tree =
     | Pr_axiom  l0
     | Pr_Iimpl  proof_tree l0
@@ -42,6 +45,9 @@ theory Proof
     | Cons y ys -> (eqb y x) || contain x ys
     end
 
+  (**
+    TODO : subfunctions ???
+  *)
   let rec check_proof (g : list l0) (pr : proof_tree)
     ensures { result = True -> set_satisfy (Elements.elements g) (conseq pr) }
     variant { pr }
