@@ -4,7 +4,7 @@
 
 ## Construction
 
-The core algorithm implemented in **Cqfd** is written in OCaml and generate a proof tree. This proof tree is then checked by a proof checker. The proof checker is verified in why3 and extracted in OCaml.
+The core algorithm implemented in **Cqfd** is written in OCaml and generates a proof tree. This proof tree is then checked by a proof checker. The proof checker is verified in why3 and extracted in OCaml.
 
 ## Features
 
@@ -13,3 +13,8 @@ The core algorithm implemented in **Cqfd** is written in OCaml and generate a pr
 ## WIP
 
 + Proof text extraction (in french)
+
+## Ideas
+
++ Extension to first order logic
+
