@@ -6,23 +6,21 @@ theory Proof
   use list.Elements
   use list.Mem
 
-
-
   (**
     TODO : factorise this using structures and labels
   *)
   type proof =
-    | Pr_axiom  l0
-    | Pr_Iimpl  proof l0
-    | Pr_Eimpl  proof proof l0
-    | Pr_Ior1   proof l0
-    | Pr_Ior2   proof l0
-    | Pr_Eor    proof proof proof l0
-    | Pr_Eand1  proof l0
-    | Pr_Eand2  proof l0
-    | Pr_Iand   proof proof l0
-    | Pr_RAA    proof l0
-    | Pr_Ebot   proof l0
+    | Pr_axiom  prop
+    | Pr_Iimpl  proof prop
+    | Pr_Eimpl  proof proof prop
+    | Pr_Ior1   proof prop
+    | Pr_Ior2   proof prop
+    | Pr_Eor    proof proof proof prop
+    | Pr_Eand1  proof prop
+    | Pr_Eand2  proof prop
+    | Pr_Iand   proof proof prop
+    | Pr_RAA    proof prop
+    | Pr_Ebot   proof prop
 
 
   let function conseq (pr : proof) =
@@ -40,7 +38,7 @@ theory Proof
     | Pr_Ebot _ p -> p
     end
 
-  let rec function contain (x : l0) (g : list l0) : bool
+  let rec function contain (x : prop) (g : list prop) : bool
     ensures { Mem.mem x g <-> result = True }
     variant { g }
   = match g with
@@ -51,7 +49,7 @@ theory Proof
   (**
     TODO : subfunctions ???
   *)
-  let rec check_proof (g : list l0) (pr : proof)
+  let rec check_proof (g : list prop) (pr : proof)
     ensures { result = True -> set_satisfy (Elements.elements g) (conseq pr) }
     variant { pr }
   = match pr with
@@ -99,5 +97,4 @@ theory Proof
       end
     | _ -> False
     end
-
 end
