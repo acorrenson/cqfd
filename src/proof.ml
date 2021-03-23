@@ -50,78 +50,83 @@ let rec check_proof (g: prop list) (pr: proof) : bool =
   match pr with
   | Pr_axiom p -> contain p g
   | Pr_Iimpl (prq,
-              Impl (p,
-                    q)) ->
+    Impl (p,
+    q)) ->
     infix_eqeq (conseq prq) q && check_proof (p :: g) prq
   | Pr_Eimpl (pr1,
-              pr2,
-              p) ->
+    pr2,
+    p) ->
     begin match conseq pr1 with
-      | Impl (a,
-              b) ->
-        infix_eqeq (conseq pr2) a && infix_eqeq p b && check_proof g pr1 && 
-        check_proof g
-          pr2
-      | _ -> false
+    | Impl (a,
+      b) ->
+      infix_eqeq (conseq pr2) a && infix_eqeq p b && check_proof g pr1 && 
+                                                     check_proof g
+                                                     pr2
+    | _ -> false
     end
   | Pr_Ior1 (pr1,
-             Or (a,
-                 _)) ->
+    Or (a,
+    _)) ->
     infix_eqeq (conseq pr1) a && check_proof g pr1
   | Pr_Ior2 (pr1,
-             Or (_,
-                 b)) ->
+    Or (_,
+    b)) ->
     infix_eqeq (conseq pr1) b && check_proof g pr1
   | Pr_Eor (pru,
-            pra,
-            prb,
-            q) ->
+    pra,
+    prb,
+    q) ->
     begin match (conseq pru, conseq pra, conseq prb) with
-      | (Or (a,
-             b),
-         Impl (x,
-               cx),
-         Impl (y,
-               cy)) ->
-        infix_eqeq a x && infix_eqeq b y && infix_eqeq cx q && infix_eqeq cy q && 
-        check_proof g
-          pru && check_proof g
-          pra && 
-        check_proof g
-          prb
-      | _ -> false
+    | (Or (a,
+      b),
+      Impl (x,
+      cx),
+      Impl (y,
+      cy)) ->
+      infix_eqeq a x && infix_eqeq b y && infix_eqeq cx q && infix_eqeq cy q && 
+                                                             check_proof g
+                                                             pru && check_proof g
+                                                                    pra && 
+                                                                    check_proof g
+                                                                    prb
+    | _ -> false
     end
   | Pr_Eand1 (pr1,
-              p) ->
+    p) ->
     begin match conseq pr1 with
-      | And (a, _) -> infix_eqeq a p && check_proof g pr1
-      | _ -> false
+    | And (a, _) -> infix_eqeq a p && check_proof g pr1
+    | _ -> false
     end
   | Pr_Eand2 (pr1,
-              p) ->
+    p) ->
     begin match conseq pr1 with
-      | And (_, a) -> infix_eqeq a p && check_proof g pr1
-      | _ -> false
+    | And (_, a) -> infix_eqeq a p && check_proof g pr1
+    | _ -> false
     end
   | Pr_Iand (pra,
-             prb,
-             And (a,
-                  b)) ->
+    prb,
+    And (a,
+    b)) ->
     infix_eqeq (conseq pra) a && infix_eqeq (conseq prb) b && check_proof g
-      pra && 
-    check_proof g
-      prb
+                                                              pra && 
+                                                              check_proof g
+                                                              prb
   | Pr_RAA (pra,
-            p) ->
+    p) ->
     begin match conseq pra with
-      | Impl (Impl (a, Bot), Bot) -> infix_eqeq a p && check_proof g pra
-      | _ -> false
+    | Impl (Impl (a, Bot), Bot) -> infix_eqeq a p && check_proof g pra
+    | _ -> false
     end
   | Pr_Ebot (pr1,
-             _) ->
+    _) ->
     begin match conseq pr1 with
-      | Bot -> check_proof g pr1
-      | _ -> false
+    | Bot -> check_proof g pr1
+    | _ -> false
     end
   | _ -> false
+
+exception ProofNotFound
+
+let search_false (g: prop list) (p: prop) : proof =
+  if contain Bot g then Pr_Ebot (Pr_axiom Bot, p) else raise ProofNotFound
 

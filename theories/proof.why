@@ -52,10 +52,10 @@ theory Proof
     TODO : subfunctions ???
   *)
 
-  predicate check_ (g : fset prop) (pr : proof)
+  predicate check_ (g : list prop) (pr : proof)
   = match pr with
-    | Pr_axiom p -> Fset.mem p g
-    | Pr_Iimpl prq (Impl p q) -> (conseq prq = q) /\ (check_ (add p g) prq)
+    | Pr_axiom p -> contain p g
+    | Pr_Iimpl prq (Impl p q) -> (conseq prq = q) /\ (check_ (Cons p g) prq)
     | Pr_Eimpl pr1 pr2 p ->
       match conseq pr1 with
       | Impl a b ->
@@ -101,7 +101,7 @@ theory Proof
 
   let rec predicate check_proof (g : list prop) (pr : proof)
     ensures { result = True -> set_satisfy (Elements.elements g) (conseq pr) }
-    ensures { result = True <-> check_ (Elements.elements g) pr }
+    ensures { result = True <-> check_ g pr }
     variant { pr }
   = match pr with
     | Pr_axiom p -> contain p g
@@ -152,7 +152,7 @@ theory Proof
   exception ProofNotFound
 
   let search_false (g : list prop) (p : prop) 
-    ensures { conseq result = p /\ check_ (Elements.elements g) result }
+    ensures { conseq result = p /\ check_ g result }
     raises { ProofNotFound }
   = if contain Bot g then begin
       assert { contain Bot g = True };
