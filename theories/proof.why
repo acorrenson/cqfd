@@ -3,8 +3,10 @@ theory Proof
 
   use lprop.Lprop
   use list.List
+  use set.Fset
   use list.Elements
   use list.Mem
+  use bool.Bool
 
   (**
     TODO : factorise this using structures and labels
@@ -49,8 +51,57 @@ theory Proof
   (**
     TODO : subfunctions ???
   *)
-  let rec check_proof (g : list prop) (pr : proof)
+
+  predicate check_ (g : fset prop) (pr : proof)
+  = match pr with
+    | Pr_axiom p -> Fset.mem p g
+    | Pr_Iimpl prq (Impl p q) -> (conseq prq = q) /\ (check_ (add p g) prq)
+    | Pr_Eimpl pr1 pr2 p ->
+      match conseq pr1 with
+      | Impl a b ->
+        conseq pr2 = a /\ p = b /\
+        check_ g pr1 /\ check_ g pr2
+      | _ -> false
+      end
+    | Pr_Ior1 pr (Or a _) -> conseq pr = a /\ check_ g pr
+    | Pr_Ior2 pr (Or _ b) -> conseq pr = b /\ check_ g pr
+    | Pr_Eor pru pra prb q ->
+      match conseq pru, conseq pra, conseq prb with
+      | Or a b, Impl x cx, Impl y cy ->
+        a = x /\ b = y /\ cx = q /\ cy = q /\
+        check_ g pru /\ check_ g pra /\
+        check_ g prb
+      | _ -> false
+      end
+    | Pr_Eand1 pr p ->
+      match conseq pr with
+      | And a _ -> a = p /\ check_ g pr
+      | _ -> false
+      end
+    | Pr_Eand2 pr p ->
+      match conseq pr with
+      | And _ a -> a = p /\ check_ g pr
+      | _ -> false
+      end
+    | Pr_Iand pra prb (And a b) ->
+      conseq pra = a /\ conseq prb = b /\
+      check_ g pra /\ check_ g prb
+    | Pr_RAA pra p ->
+      match conseq pra with
+      | Impl (Impl a Bot) Bot -> a = p /\ check_ g pra
+      | _ -> false
+      end
+    | Pr_Ebot pr _ ->
+      match conseq pr with
+      | Bot -> check_ g pr
+      | _ -> false
+      end
+    | _ -> false
+  end
+
+  let rec predicate check_proof (g : list prop) (pr : proof)
     ensures { result = True -> set_satisfy (Elements.elements g) (conseq pr) }
+    ensures { result = True <-> check_ (Elements.elements g) pr }
     variant { pr }
   = match pr with
     | Pr_axiom p -> contain p g
@@ -96,5 +147,16 @@ theory Proof
       | _ -> False
       end
     | _ -> False
-    end
+  end
+
+  exception ProofNotFound
+
+  let search_false (g : list prop) (p : prop) 
+    ensures { conseq result = p /\ check_ (Elements.elements g) result }
+    raises { ProofNotFound }
+  = if contain Bot g then begin
+      assert { contain Bot g = True };
+      Pr_Ebot (Pr_axiom Bot) p
+    end else raise ProofNotFound
+
 end
