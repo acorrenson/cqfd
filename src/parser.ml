@@ -1,5 +1,5 @@
 open Opal
-open Proof
+open Lprop__Lprop
 
 let parens = between (exactly '(') (exactly ')')
 

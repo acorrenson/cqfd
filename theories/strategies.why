@@ -1,0 +1,185 @@
+module Finders
+
+  use lprop.Lprop
+  use proof.Proof
+  use list.List
+  use list.Mem
+
+  exception Not_found
+
+  let rec find (pred : prop -> bool) (l : list prop) 
+    variant { l }
+    ensures { pred result }
+    ensures { hypothesis result l }
+    raises  { Not_found -> forall x. Mem.mem x l -> not pred x }
+  = match l with
+    | Nil -> raise Not_found
+    | Cons x xs -> if pred x then x else find pred xs
+    end
+
+  (**
+    Check if a prop [q] is of the form [h -> p] where
+    [h] is an hypothesis
+  *)
+  let do_implies (q : prop) (p : prop) (env : list prop)
+    ensures { result -> exists x. q = Impl x p /\ hypothesis x env }
+  = match q with
+    | Impl h x -> (x == p) && (hypothesis h env)
+    | _ -> false
+    end
+
+  let do_and_left (p : prop) (q : prop) 
+    ensures { result -> exists x. q = And p x }
+  = match q with
+    | And x _ -> p == x
+    | _ -> false
+    end
+
+  let do_and_right (p : prop) (q : prop)
+    ensures { result -> exists x. q = And x p }
+  = match q with
+    | And _ x -> p == x
+    | _ -> false
+    end
+
+  let do_case (q : prop) (p : prop) (env : list prop)
+    ensures { result -> exists a b. q = Or a b 
+                        /\ hypothesis (Impl a p) env
+                        /\ hypothesis (Impl b p) env
+            }
+  = match q with
+    | Or a b ->
+      let h1 = Impl a p in 
+      let h2 = Impl b p in
+      hypothesis h1 env && hypothesis h2 env
+    | _ -> false
+    end
+
+end
+
+
+module Strategies
+
+  use proof.Proof
+  use lprop.Lprop
+  use list.List
+  use list.Mem
+  use Finders
+
+  exception ProofNotFound
+
+
+  let search_false (env : list prop) (p : prop)
+    ensures { conseq result = p /\ is_proof env result }
+    raises { ProofNotFound }
+  =
+    if hypothesis Bot env 
+    then Pr_Ebot (Pr_axiom Bot) p
+    else raise ProofNotFound
+
+
+  let search_raa (env : list prop) (p : prop) 
+    ensures { conseq result = p /\ is_proof env result }
+    raises  { ProofNotFound }
+  = 
+    let nnp = Impl (Impl p Bot) Bot in
+    if hypothesis nnp env
+    then Pr_RAA (Pr_axiom nnp) p
+    else raise ProofNotFound
+
+
+  let search_Eimpl (env : list prop) (p : prop)
+    ensures { conseq result = p }
+    ensures { is_proof env result }
+    raises  { ProofNotFound }
+  = try
+      let h = find (fun q -> do_implies q p env) env in
+      match h with
+      | Impl a _ -> Pr_Eimpl (Pr_axiom h) (Pr_axiom a) p
+      end
+    with Not_found -> raise ProofNotFound end
+
+
+  let search_Eand (env : list prop) (p : prop)
+    ensures { is_proof env result }
+    ensures { conseq result = p }
+    raises  { ProofNotFound }
+  = try
+      let x = find (do_and_left p) env in
+      Pr_Eand1 (Pr_axiom x) p
+    with Not_found -> 
+    try
+      let x = find (do_and_right p) env in
+      Pr_Eand2 (Pr_axiom x) p
+    with Not_found -> raise ProofNotFound end end
+
+
+  let search_Eor (env : list prop) (p : prop)
+    ensures { is_proof env result }
+    ensures { conseq result = p }
+    raises  { ProofNotFound }
+  = try
+      let h = find (fun q -> do_case q p env) env in
+      match h with
+      | Or a b ->
+        let h1 = Pr_axiom h in
+        let h2 = Pr_axiom (Impl a p) in
+        let h3 = Pr_axiom (Impl b p) in
+        Pr_Eor h1 h2 h3 p
+      end
+    with Not_found -> raise ProofNotFound end
+
+
+  let search_contradiction (env : list prop) (p : prop) 
+    ensures { is_proof env result }
+    ensures { conseq result = p }
+    raises  { ProofNotFound }
+  = try
+      let x = find (fun q -> hypothesis (Impl q Bot) env) env in
+      Pr_Ebot (Pr_Eimpl (Pr_axiom (Impl x Bot)) (Pr_axiom x) Bot) p
+    with Not_found -> raise ProofNotFound end
+
+  
+  let search_immediate_rule (env : list prop) (p : prop)
+    ensures { is_proof env result }
+    ensures { conseq result = p }
+    raises { ProofNotFound }
+  =
+    let fall_back ()
+      ensures { is_proof env result }
+      ensures { conseq result = p }
+      raises { ProofNotFound }
+    =
+      try search_Eimpl env p
+      with ProofNotFound ->
+      try search_Eor env p
+      with ProofNotFound ->
+      try search_Eor env p
+      with ProofNotFound ->
+      try search_Eand env p
+      with ProofNotFound ->
+      search_raa env p
+      end end end end
+    in
+    match p with
+    | And x y ->
+      if hypothesis x env && hypothesis y env
+      then begin
+        assert { is_proof env (Pr_axiom x) };
+        assert { is_proof env (Pr_axiom y) };
+        assert { conseq (Pr_axiom y) = y };
+        assert { conseq (Pr_axiom x) = x };
+        assert { is_proof env (Pr_Iand (Pr_axiom x) (Pr_axiom y) p) };
+        Pr_Iand (Pr_axiom x) (Pr_axiom y) p
+      end else fall_back ()
+    | Or x y ->
+      if hypothesis x env 
+      then Pr_Ior1 (Pr_axiom x) p
+      else if hypothesis y env
+      then Pr_Ior2 (Pr_axiom y) p
+      else fall_back ()
+    | _ -> fall_back ()
+    end
+
+
+end

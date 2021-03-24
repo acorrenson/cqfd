@@ -8,9 +8,7 @@ theory Proof
   use list.Mem
   use bool.Bool
 
-  (**
-    TODO : factorise this using structures and labels
-  *)
+  (** Proof trees *)
   type proof =
     | Pr_axiom  prop
     | Pr_Iimpl  proof prop
@@ -25,6 +23,7 @@ theory Proof
     | Pr_Ebot   proof prop
 
 
+  (** Usefull function *)
   let function conseq (pr : proof) =
     match pr with
     | Pr_axiom p -> p
@@ -40,71 +39,74 @@ theory Proof
     | Pr_Ebot _ p -> p
     end
 
-  let rec function contain (x : prop) (g : list prop) : bool
+  (** Test if a prop is in a given context *)
+  let rec function hypothesis (x : prop) (g : list prop) : bool
     ensures { Mem.mem x g <-> result = True }
     variant { g }
   = match g with
     | Nil -> False
-    | Cons y ys -> (y == x) || contain x ys
+    | Cons y ys -> (y == x) || hypothesis x ys
     end
 
-  (**
-    TODO : subfunctions ???
-  *)
-
-  predicate check_ (g : list prop) (pr : proof)
+  (** Ensures that a proof tree is correct *)
+  predicate is_proof (g : list prop) (pr : proof)
   = match pr with
-    | Pr_axiom p -> contain p g
-    | Pr_Iimpl prq (Impl p q) -> (conseq prq = q) /\ (check_ (Cons p g) prq)
+    | Pr_axiom p -> hypothesis p g
+    | Pr_Iimpl prq (Impl p q) -> (conseq prq = q) /\ (is_proof (Cons p g) prq)
     | Pr_Eimpl pr1 pr2 p ->
       match conseq pr1 with
       | Impl a b ->
         conseq pr2 = a /\ p = b /\
-        check_ g pr1 /\ check_ g pr2
+        is_proof g pr1 /\ is_proof g pr2
       | _ -> false
       end
-    | Pr_Ior1 pr (Or a _) -> conseq pr = a /\ check_ g pr
-    | Pr_Ior2 pr (Or _ b) -> conseq pr = b /\ check_ g pr
+    | Pr_Ior1 pr (Or a _) -> conseq pr = a /\ is_proof g pr
+    | Pr_Ior2 pr (Or _ b) -> conseq pr = b /\ is_proof g pr
     | Pr_Eor pru pra prb q ->
       match conseq pru, conseq pra, conseq prb with
       | Or a b, Impl x cx, Impl y cy ->
         a = x /\ b = y /\ cx = q /\ cy = q /\
-        check_ g pru /\ check_ g pra /\
-        check_ g prb
+        is_proof g pru /\ is_proof g pra /\
+        is_proof g prb
       | _ -> false
       end
     | Pr_Eand1 pr p ->
       match conseq pr with
-      | And a _ -> a = p /\ check_ g pr
+      | And a _ -> a = p /\ is_proof g pr
       | _ -> false
       end
     | Pr_Eand2 pr p ->
       match conseq pr with
-      | And _ a -> a = p /\ check_ g pr
+      | And _ a -> a = p /\ is_proof g pr
       | _ -> false
       end
     | Pr_Iand pra prb (And a b) ->
       conseq pra = a /\ conseq prb = b /\
-      check_ g pra /\ check_ g prb
+      is_proof g pra /\ is_proof g prb
     | Pr_RAA pra p ->
       match conseq pra with
-      | Impl (Impl a Bot) Bot -> a = p /\ check_ g pra
+      | Impl (Impl a Bot) Bot -> a = p /\ is_proof g pra
       | _ -> false
       end
     | Pr_Ebot pr _ ->
       match conseq pr with
-      | Bot -> check_ g pr
+      | Bot -> is_proof g pr
       | _ -> false
       end
     | _ -> false
   end
 
-  let rec predicate check_proof (g : list prop) (pr : proof)
+  (**
+    An implementation of a proof checker
+    which also act as a proof by induction of 
+    the equivalence btw checked proof and satisfiability
+  *)
+  let rec check_proof (g : list prop) (pr : proof)
     ensures { result = True -> set_satisfy (Elements.elements g) (conseq pr) }
-    ensures { result = True <-> check_ g pr }
+    ensures { result = True <-> is_proof g pr }
     variant { pr }
   = match pr with
-    | Pr_axiom p -> contain p g
+    | Pr_axiom p -> hypothesis p g
     | Pr_Iimpl prq (Impl p q) -> conseq prq == q && check_proof (Cons p g) prq
     | Pr_Eimpl pr1 pr2 p ->
       match conseq pr1 with
@@ -148,15 +150,5 @@ theory Proof
       end
     | _ -> False
   end
-
-  exception ProofNotFound
-
-  let search_false (g : list prop) (p : prop) 
-    ensures { conseq result = p /\ check_ g result }
-    raises { ProofNotFound }
-  = if contain Bot g then begin
-      assert { contain Bot g = True };
-      Pr_Ebot (Pr_axiom Bot) p
-    end else raise ProofNotFound
 
 end
