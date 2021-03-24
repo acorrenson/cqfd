@@ -3,6 +3,7 @@
 "http://why3.lri.fr/why3session.dtd">
 <why3session shape_version="6">
 <prover id="0" name="Alt-Ergo" version="2.3.1" timelimit="5" steplimit="0" memlimit="1000"/>
+<prover id="1" name="CVC4" version="1.7" timelimit="5" steplimit="0" memlimit="1000"/>
 <file format="whyml" proved="true">
 <path name=".."/><path name="strategies.why"/>
 <theory name="Finders" proved="true">
@@ -26,14 +27,23 @@
  <goal name="search_false&#39;vc" expl="VC for search_false" proved="true">
  <transf name="split_vc" proved="true" >
   <goal name="search_false&#39;vc.0" expl="postcondition" proved="true">
-  <proof prover="0"><result status="valid" time="0.04" steps="70"/></proof>
+  <proof prover="0"><result status="valid" time="0.04" steps="59"/></proof>
+  </goal>
+  <goal name="search_false&#39;vc.1" expl="postcondition" proved="true">
+  <proof prover="0"><result status="valid" time="0.05" steps="50"/></proof>
   </goal>
  </transf>
+ </goal>
+ <goal name="search_axiom&#39;vc" expl="VC for search_axiom" proved="true">
+ <proof prover="0"><result status="valid" time="0.04" steps="55"/></proof>
  </goal>
  <goal name="search_raa&#39;vc" expl="VC for search_raa" proved="true">
  <transf name="split_vc" proved="true" >
   <goal name="search_raa&#39;vc.0" expl="postcondition" proved="true">
-  <proof prover="0"><result status="valid" time="0.04" steps="98"/></proof>
+  <proof prover="0"><result status="valid" time="0.04" steps="74"/></proof>
+  </goal>
+  <goal name="search_raa&#39;vc.1" expl="postcondition" proved="true">
+  <proof prover="0"><result status="valid" time="0.05" steps="68"/></proof>
   </goal>
  </transf>
  </goal>
@@ -43,10 +53,10 @@
   <proof prover="0"><result status="valid" time="0.04" steps="173"/></proof>
   </goal>
   <goal name="search_Eimpl&#39;vc.1" expl="postcondition" proved="true">
-  <proof prover="0"><result status="valid" time="0.03" steps="73"/></proof>
+  <proof prover="0"><result status="valid" time="0.04" steps="109"/></proof>
   </goal>
   <goal name="search_Eimpl&#39;vc.2" expl="postcondition" proved="true">
-  <proof prover="0"><result status="valid" time="0.04" steps="116"/></proof>
+  <proof prover="0"><result status="valid" time="0.03" steps="75"/></proof>
   </goal>
  </transf>
  </goal>
@@ -121,58 +131,109 @@
   <goal name="search_immediate_rule&#39;vc.9" expl="postcondition" proved="true">
   <proof prover="0"><result status="valid" time="0.03" steps="16"/></proof>
   </goal>
-  <goal name="search_immediate_rule&#39;vc.10" expl="assertion" proved="true">
-  <proof prover="0"><result status="valid" time="0.03" steps="24"/></proof>
+  <goal name="search_immediate_rule&#39;vc.10" expl="postcondition" proved="true">
+  <proof prover="1"><result status="valid" time="0.17" steps="33302"/></proof>
   </goal>
-  <goal name="search_immediate_rule&#39;vc.11" expl="assertion" proved="true">
-  <proof prover="0"><result status="valid" time="0.03" steps="26"/></proof>
+  <goal name="search_immediate_rule&#39;vc.11" expl="postcondition" proved="true">
+  <proof prover="0"><result status="valid" time="0.04" steps="76"/></proof>
   </goal>
-  <goal name="search_immediate_rule&#39;vc.12" expl="assertion" proved="true">
-  <proof prover="0"><result status="valid" time="0.04" steps="62"/></proof>
-  </goal>
-  <goal name="search_immediate_rule&#39;vc.13" expl="assertion" proved="true">
-  <proof prover="0"><result status="valid" time="0.04" steps="66"/></proof>
-  </goal>
-  <goal name="search_immediate_rule&#39;vc.14" expl="assertion" proved="true">
-  <proof prover="0"><result status="valid" time="0.05" steps="32"/></proof>
-  </goal>
-  <goal name="search_immediate_rule&#39;vc.15" expl="postcondition" proved="true">
-  <proof prover="0"><result status="valid" time="0.04" steps="32"/></proof>
-  </goal>
-  <goal name="search_immediate_rule&#39;vc.16" expl="postcondition" proved="true">
-  <proof prover="0"><result status="valid" time="0.04" steps="81"/></proof>
-  </goal>
-  <goal name="search_immediate_rule&#39;vc.17" expl="postcondition" proved="true">
+  <goal name="search_immediate_rule&#39;vc.12" expl="postcondition" proved="true">
   <proof prover="0"><result status="valid" time="0.04" steps="18"/></proof>
   </goal>
-  <goal name="search_immediate_rule&#39;vc.18" expl="postcondition" proved="true">
+  <goal name="search_immediate_rule&#39;vc.13" expl="postcondition" proved="true">
   <proof prover="0"><result status="valid" time="0.03" steps="18"/></proof>
   </goal>
-  <goal name="search_immediate_rule&#39;vc.19" expl="postcondition" proved="true">
+  <goal name="search_immediate_rule&#39;vc.14" expl="postcondition" proved="true">
   <proof prover="0"><result status="valid" time="0.13" steps="388"/></proof>
   </goal>
-  <goal name="search_immediate_rule&#39;vc.20" expl="postcondition" proved="true">
+  <goal name="search_immediate_rule&#39;vc.15" expl="postcondition" proved="true">
   <proof prover="0"><result status="valid" time="0.04" steps="60"/></proof>
   </goal>
-  <goal name="search_immediate_rule&#39;vc.21" expl="postcondition" proved="true">
+  <goal name="search_immediate_rule&#39;vc.16" expl="postcondition" proved="true">
   <proof prover="0"><result status="valid" time="0.50" steps="1308"/></proof>
   </goal>
-  <goal name="search_immediate_rule&#39;vc.22" expl="postcondition" proved="true">
+  <goal name="search_immediate_rule&#39;vc.17" expl="postcondition" proved="true">
   <proof prover="0"><result status="valid" time="0.05" steps="68"/></proof>
   </goal>
-  <goal name="search_immediate_rule&#39;vc.23" expl="postcondition" proved="true">
+  <goal name="search_immediate_rule&#39;vc.18" expl="postcondition" proved="true">
   <proof prover="0"><result status="valid" time="0.03" steps="26"/></proof>
   </goal>
-  <goal name="search_immediate_rule&#39;vc.24" expl="postcondition" proved="true">
+  <goal name="search_immediate_rule&#39;vc.19" expl="postcondition" proved="true">
   <proof prover="0"><result status="valid" time="0.04" steps="26"/></proof>
   </goal>
-  <goal name="search_immediate_rule&#39;vc.25" expl="postcondition" proved="true">
+  <goal name="search_immediate_rule&#39;vc.20" expl="postcondition" proved="true">
   <proof prover="0"><result status="valid" time="0.04" steps="16"/></proof>
   </goal>
-  <goal name="search_immediate_rule&#39;vc.26" expl="postcondition" proved="true">
+  <goal name="search_immediate_rule&#39;vc.21" expl="postcondition" proved="true">
   <proof prover="0"><result status="valid" time="0.04" steps="16"/></proof>
   </goal>
  </transf>
+ </goal>
+ <goal name="prove&#39;vc" expl="VC for prove" proved="true">
+ <proof prover="0" obsolete="true"><result status="timeout" time="5.00"/></proof>
+ <transf name="split_vc" proved="true" >
+  <goal name="prove&#39;vc.0" expl="postcondition" proved="true">
+  <proof prover="0"><result status="valid" time="0.03" steps="16"/></proof>
+  </goal>
+  <goal name="prove&#39;vc.1" expl="postcondition" proved="true">
+  <proof prover="0"><result status="valid" time="0.03" steps="16"/></proof>
+  </goal>
+  <goal name="prove&#39;vc.2" expl="postcondition" proved="true">
+  <proof prover="0"><result status="valid" time="0.03" steps="16"/></proof>
+  </goal>
+  <goal name="prove&#39;vc.3" expl="postcondition" proved="true">
+  <proof prover="0"><result status="valid" time="0.03" steps="16"/></proof>
+  </goal>
+  <goal name="prove&#39;vc.4" expl="postcondition" proved="true">
+  <proof prover="0"><result status="valid" time="0.03" steps="16"/></proof>
+  </goal>
+  <goal name="prove&#39;vc.5" expl="postcondition" proved="true">
+  <proof prover="0"><result status="valid" time="0.03" steps="16"/></proof>
+  </goal>
+  <goal name="prove&#39;vc.6" expl="variant decrease" proved="true">
+  <proof prover="0"><result status="valid" time="0.04" steps="104"/></proof>
+  </goal>
+  <goal name="prove&#39;vc.7" expl="variant decrease" proved="true">
+  <proof prover="0"><result status="valid" time="0.05" steps="111"/></proof>
+  <proof prover="1" obsolete="true"><result status="unknown" time="0.24" steps="38258"/></proof>
+  </goal>
+  <goal name="prove&#39;vc.8" expl="postcondition" proved="true">
+  <proof prover="0"><result status="valid" time="0.04" steps="54"/></proof>
+  </goal>
+  <goal name="prove&#39;vc.9" expl="postcondition" proved="true">
+  <proof prover="0"><result status="valid" time="0.04" steps="22"/></proof>
+  </goal>
+  <goal name="prove&#39;vc.10" expl="variant decrease" proved="true">
+  <proof prover="0"><result status="valid" time="0.05" steps="106"/></proof>
+  </goal>
+  <goal name="prove&#39;vc.11" expl="postcondition" proved="true">
+  <proof prover="0"><result status="valid" time="0.04" steps="48"/></proof>
+  </goal>
+  <goal name="prove&#39;vc.12" expl="postcondition" proved="true">
+  <proof prover="0"><result status="valid" time="0.04" steps="20"/></proof>
+  </goal>
+  <goal name="prove&#39;vc.13" expl="variant decrease" proved="true">
+  <proof prover="0"><result status="valid" time="0.05" steps="106"/></proof>
+  </goal>
+  <goal name="prove&#39;vc.14" expl="postcondition" proved="true">
+  <proof prover="0"><result status="valid" time="0.04" steps="48"/></proof>
+  </goal>
+  <goal name="prove&#39;vc.15" expl="postcondition" proved="true">
+  <proof prover="0"><result status="valid" time="0.04" steps="20"/></proof>
+  </goal>
+  <goal name="prove&#39;vc.16" expl="variant decrease" proved="true">
+  <proof prover="0"><result status="valid" time="0.05" steps="106"/></proof>
+  </goal>
+  <goal name="prove&#39;vc.17" expl="postcondition" proved="true">
+  <proof prover="0"><result status="valid" time="0.04" steps="56"/></proof>
+  </goal>
+  <goal name="prove&#39;vc.18" expl="postcondition" proved="true">
+  <proof prover="0"><result status="valid" time="0.03" steps="20"/></proof>
+  </goal>
+ </transf>
+ </goal>
+ <goal name="search_rec&#39;vc" expl="VC for search_rec">
+ <proof prover="0"><undone/></proof>
  </goal>
 </theory>
 </file>

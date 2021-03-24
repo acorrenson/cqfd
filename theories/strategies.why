@@ -68,29 +68,35 @@ module Strategies
 
   exception ProofNotFound
 
-
   let search_false (env : list prop) (p : prop)
-    ensures { conseq result = p /\ is_proof env result }
-    raises { ProofNotFound }
-  =
-    if hypothesis Bot env 
+    ensures { is_proof env result }
+    ensures { conseq result = p }
+    raises  { ProofNotFound }
+  = if hypothesis Bot env
     then Pr_Ebot (Pr_axiom Bot) p
     else raise ProofNotFound
 
+  let search_axiom (env : list prop) (p : prop)
+    ensures { is_proof env result }
+    ensures { conseq result = p }
+    raises  { ProofNotFound }
+  = if hypothesis p env 
+    then Pr_axiom p
+    else raise ProofNotFound
 
   let search_raa (env : list prop) (p : prop) 
-    ensures { conseq result = p /\ is_proof env result }
+    ensures { is_proof env result }
+    ensures { conseq result = p }
     raises  { ProofNotFound }
-  = 
-    let nnp = Impl (Impl p Bot) Bot in
+  = let nnp = Impl (Impl p Bot) Bot in
     if hypothesis nnp env
     then Pr_RAA (Pr_axiom nnp) p
     else raise ProofNotFound
 
 
   let search_Eimpl (env : list prop) (p : prop)
-    ensures { conseq result = p }
     ensures { is_proof env result }
+    ensures { conseq result = p }
     raises  { ProofNotFound }
   = try
       let h = find (fun q -> do_implies q p env) env in
@@ -107,7 +113,7 @@ module Strategies
   = try
       let x = find (do_and_left p) env in
       Pr_Eand1 (Pr_axiom x) p
-    with Not_found -> 
+    with Not_found ->
     try
       let x = find (do_and_right p) env in
       Pr_Eand2 (Pr_axiom x) p
@@ -144,13 +150,11 @@ module Strategies
     ensures { is_proof env result }
     ensures { conseq result = p }
     raises { ProofNotFound }
-  =
-    let fall_back ()
+  = let fall_back ()
       ensures { is_proof env result }
       ensures { conseq result = p }
       raises { ProofNotFound }
-    =
-      try search_Eimpl env p
+    = try search_Eimpl env p
       with ProofNotFound ->
       try search_Eor env p
       with ProofNotFound ->
@@ -164,14 +168,8 @@ module Strategies
     match p with
     | And x y ->
       if hypothesis x env && hypothesis y env
-      then begin
-        assert { is_proof env (Pr_axiom x) };
-        assert { is_proof env (Pr_axiom y) };
-        assert { conseq (Pr_axiom y) = y };
-        assert { conseq (Pr_axiom x) = x };
-        assert { is_proof env (Pr_Iand (Pr_axiom x) (Pr_axiom y) p) };
-        Pr_Iand (Pr_axiom x) (Pr_axiom y) p
-      end else fall_back ()
+      then Pr_Iand (Pr_axiom x) (Pr_axiom y) p
+      else fall_back ()
     | Or x y ->
       if hypothesis x env 
       then Pr_Ior1 (Pr_axiom x) p
@@ -181,5 +179,31 @@ module Strategies
     | _ -> fall_back ()
     end
 
+    let rec prove (env : list prop) (p : prop)
+      ensures { conseq result = p }
+      ensures { is_proof env result }
+      raises  { ProofNotFound }
+      variant { p }
+    = try
+        search_axiom env p
+      with ProofNotFound ->
+      try
+        search_immediate_rule env p
+      with ProofNotFound ->
+      try
+        search_contradiction env p
+      with ProofNotFound ->
+        match p with
+        | And a b ->
+          let pra = prove env a in
+          let prb = prove env b in
+          Pr_Iand pra prb p
+        | Or a b ->
+          try Pr_Ior1 (prove env a) p
+          with ProofNotFound -> Pr_Ior2 (prove env b) p end
+        | Impl a b ->
+          Pr_Iimpl (prove (Cons a env) b) p
+        | _ -> raise ProofNotFound
+      end end end end
 
 end

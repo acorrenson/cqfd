@@ -6,6 +6,12 @@ let search_false (env: Lprop__Lprop.prop list) (p: Lprop__Lprop.prop) :
   then Proof__Proof.Pr_Ebot (Proof__Proof.Pr_axiom Lprop__Lprop.Bot, p)
   else raise ProofNotFound
 
+let search_axiom (env: Lprop__Lprop.prop list) (p: Lprop__Lprop.prop) :
+  Proof__Proof.proof =
+  if Proof__Proof.hypothesis p env
+  then Proof__Proof.Pr_axiom p
+  else raise ProofNotFound
+
 let search_raa (env: Lprop__Lprop.prop list) (p: Lprop__Lprop.prop) :
   Proof__Proof.proof =
   let nnp =
@@ -117,4 +123,32 @@ let search_immediate_rule (env: Lprop__Lprop.prop list)
         then Proof__Proof.Pr_Ior2 (Proof__Proof.Pr_axiom y, p)
         else fall_back () end
   | _ -> fall_back ()
+
+let rec prove (env: Lprop__Lprop.prop list) (p: Lprop__Lprop.prop) :
+  Proof__Proof.proof =
+  try search_axiom env p with
+  | ProofNotFound ->
+      begin try search_immediate_rule env p with
+      | ProofNotFound ->
+          begin try search_contradiction env p with
+          | ProofNotFound ->
+              begin match p with
+              | Lprop__Lprop.And (a,
+                b) ->
+                (let pra = prove env a in let prb = prove env b in
+                 Proof__Proof.Pr_Iand (pra, prb, p))
+              | Lprop__Lprop.Or (a,
+                b) ->
+                begin try let o = prove env a in Proof__Proof.Pr_Ior1 (o, p)
+                with
+                | ProofNotFound ->
+                    (let o = prove env b in Proof__Proof.Pr_Ior2 (o, p))
+                end
+              | Lprop__Lprop.Impl (a,
+                b) ->
+                (let o = prove (a :: env) b in Proof__Proof.Pr_Iimpl (o, p))
+              | _ -> raise ProofNotFound
+              end
+          end
+      end
 
