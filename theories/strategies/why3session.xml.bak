@@ -4,7 +4,7 @@
 <why3session shape_version="6">
 <prover id="0" name="Alt-Ergo" version="2.3.1" timelimit="5" steplimit="0" memlimit="1000"/>
 <prover id="1" name="CVC4" version="1.7" timelimit="5" steplimit="0" memlimit="1000"/>
-<file format="whyml">
+<file format="whyml" proved="true">
 <path name=".."/><path name="strategies.why"/>
 <theory name="Finders" proved="true">
  <goal name="find&#39;vc" expl="VC for find" proved="true">
@@ -23,7 +23,7 @@
  <proof prover="0"><result status="valid" time="0.03" steps="82"/></proof>
  </goal>
 </theory>
-<theory name="Strategies">
+<theory name="Strategies" proved="true">
  <goal name="search_false&#39;vc" expl="VC for search_false" proved="true">
  <transf name="split_vc" proved="true" >
   <goal name="search_false&#39;vc.0" expl="postcondition" proved="true">
@@ -169,12 +169,9 @@
   </goal>
  </transf>
  </goal>
- <goal name="search_rec&#39;vc" expl="VC for search_rec" proved="true">
- <proof prover="0"><result status="valid" time="0.11" steps="584"/></proof>
- </goal>
- <goal name="prove&#39;vc" expl="VC for prove">
- <proof prover="0"><result status="timeout" time="5.00"/></proof>
- <transf name="split_vc" >
+ <goal name="prove&#39;vc" expl="VC for prove" proved="true">
+ <proof prover="0" obsolete="true"><result status="timeout" time="5.00"/></proof>
+ <transf name="split_vc" proved="true" >
   <goal name="prove&#39;vc.0" expl="postcondition" proved="true">
   <proof prover="0"><result status="valid" time="0.03" steps="16"/></proof>
   </goal>
@@ -193,17 +190,50 @@
   <goal name="prove&#39;vc.5" expl="postcondition" proved="true">
   <proof prover="0"><result status="valid" time="0.03" steps="16"/></proof>
   </goal>
-  <goal name="prove&#39;vc.6" expl="variant decrease">
-  <proof prover="0"><result status="timeout" time="5.00"/></proof>
-  <proof prover="1"><result status="unknown" time="0.24" steps="38258"/></proof>
+  <goal name="prove&#39;vc.6" expl="variant decrease" proved="true">
+  <proof prover="0"><result status="valid" time="0.04" steps="104"/></proof>
   </goal>
-  <goal name="prove&#39;vc.7" expl="postcondition" proved="true">
-  <proof prover="0"><result status="valid" time="0.04" steps="16"/></proof>
+  <goal name="prove&#39;vc.7" expl="variant decrease" proved="true">
+  <proof prover="0"><result status="valid" time="0.05" steps="111"/></proof>
+  <proof prover="1" obsolete="true"><result status="unknown" time="0.24" steps="38258"/></proof>
   </goal>
   <goal name="prove&#39;vc.8" expl="postcondition" proved="true">
-  <proof prover="0"><result status="valid" time="0.04" steps="16"/></proof>
+  <proof prover="0"><result status="valid" time="0.04" steps="54"/></proof>
+  </goal>
+  <goal name="prove&#39;vc.9" expl="postcondition" proved="true">
+  <proof prover="0"><result status="valid" time="0.04" steps="22"/></proof>
+  </goal>
+  <goal name="prove&#39;vc.10" expl="variant decrease" proved="true">
+  <proof prover="0"><result status="valid" time="0.05" steps="106"/></proof>
+  </goal>
+  <goal name="prove&#39;vc.11" expl="postcondition" proved="true">
+  <proof prover="0"><result status="valid" time="0.04" steps="48"/></proof>
+  </goal>
+  <goal name="prove&#39;vc.12" expl="postcondition" proved="true">
+  <proof prover="0"><result status="valid" time="0.04" steps="20"/></proof>
+  </goal>
+  <goal name="prove&#39;vc.13" expl="variant decrease" proved="true">
+  <proof prover="0"><result status="valid" time="0.05" steps="106"/></proof>
+  </goal>
+  <goal name="prove&#39;vc.14" expl="postcondition" proved="true">
+  <proof prover="0"><result status="valid" time="0.04" steps="48"/></proof>
+  </goal>
+  <goal name="prove&#39;vc.15" expl="postcondition" proved="true">
+  <proof prover="0"><result status="valid" time="0.04" steps="20"/></proof>
+  </goal>
+  <goal name="prove&#39;vc.16" expl="variant decrease" proved="true">
+  <proof prover="0"><result status="valid" time="0.05" steps="106"/></proof>
+  </goal>
+  <goal name="prove&#39;vc.17" expl="postcondition" proved="true">
+  <proof prover="0"><result status="valid" time="0.04" steps="56"/></proof>
+  </goal>
+  <goal name="prove&#39;vc.18" expl="postcondition" proved="true">
+  <proof prover="0"><result status="valid" time="0.03" steps="20"/></proof>
   </goal>
  </transf>
+ </goal>
+ <goal name="search_rec&#39;vc" expl="VC for search_rec">
+ <proof prover="0"><undone/></proof>
  </goal>
 </theory>
 </file>

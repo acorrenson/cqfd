@@ -57,6 +57,56 @@ module Finders
 
 end
 
+module Transform
+  use lprop.Lprop
+  use proof.Proof
+  use list.List
+  use list.Mem
+  use list.Elements
+  use set.Fset
+
+  (* lemma test1 :
+    forall p q r. forall env.
+    set_satisfy (Elements.elements (Cons (And p q) env)) r ->
+    set_satisfy (Elements.elements (Cons p (Cons q env))) r*)
+
+  lemma weakening :
+    forall p r. forall env.
+    set_satisfy env r ->
+    set_satisfy (add p env) r
+
+  predicate mem_split (e1 : fset prop) (e2 : fset prop)
+  = forall p q. mem (And p q) e1 -> mem p e2 /\ mem q e2
+
+  predicate mem_sat (e1 : fset prop) (e2 : fset prop)
+  = forall p. mem p e1 -> set_satisfy e2 p
+
+  predicate stable (e1 : fset prop) (e2 : fset prop)
+  = forall p. set_satisfy e1 p -> set_satisfy e2 p
+
+  lemma split_stable :
+    forall e1 e2.
+      mem_split e1 e2 ->
+      mem_sat e2 e1 ->
+      stable e2 e1
+
+  let rec function split (env : list prop)
+    ensures { mem_split (Elements.elements env) (Elements.elements result) }
+    ensures { mem_sat (Elements.elements result) (Elements.elements env) }
+    variant { env }
+  = match env with
+    | Nil -> Nil
+    | Cons (And a b) env' ->
+      assert { set_satisfy (Elements.elements env) a };
+      assert { set_satisfy (Elements.elements env) b };
+      Cons a (Cons b (split env'))
+    | Cons a env' -> Cons a (split env')
+    end
+
+  lemma split_correct:
+    forall e. stable (Elements.elements (split e)) (Elements.elements e)
+end
+
 
 module Strategies
 

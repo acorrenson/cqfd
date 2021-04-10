@@ -23,6 +23,20 @@
  <proof prover="0"><result status="valid" time="0.03" steps="82"/></proof>
  </goal>
 </theory>
+<theory name="Transform" proved="true">
+ <goal name="weakening" proved="true">
+ <proof prover="0"><result status="valid" time="0.05" steps="116"/></proof>
+ </goal>
+ <goal name="split_stable" proved="true">
+ <proof prover="0"><result status="valid" time="0.05" steps="88"/></proof>
+ </goal>
+ <goal name="split&#39;vc" expl="VC for split" proved="true">
+ <proof prover="0"><result status="valid" time="3.44" steps="16543"/></proof>
+ </goal>
+ <goal name="split_correct" proved="true">
+ <proof prover="0"><result status="valid" time="0.04" steps="16"/></proof>
+ </goal>
+</theory>
 <theory name="Strategies" proved="true">
  <goal name="search_false&#39;vc" expl="VC for search_false" proved="true">
  <transf name="split_vc" proved="true" >
@@ -170,7 +184,7 @@
  </transf>
  </goal>
  <goal name="prove&#39;vc" expl="VC for prove" proved="true">
- <proof prover="0" obsolete="true"><result status="timeout" time="5.00"/></proof>
+ <proof prover="0"><result status="valid" time="0.14" steps="584"/></proof>
  <transf name="split_vc" proved="true" >
   <goal name="prove&#39;vc.0" expl="postcondition" proved="true">
   <proof prover="0"><result status="valid" time="0.03" steps="16"/></proof>
@@ -195,7 +209,7 @@
   </goal>
   <goal name="prove&#39;vc.7" expl="variant decrease" proved="true">
   <proof prover="0"><result status="valid" time="0.05" steps="111"/></proof>
-  <proof prover="1" obsolete="true"><result status="unknown" time="0.24" steps="38258"/></proof>
+  <proof prover="1"><result status="valid" time="0.23" steps="33874"/></proof>
   </goal>
   <goal name="prove&#39;vc.8" expl="postcondition" proved="true">
   <proof prover="0"><result status="valid" time="0.04" steps="54"/></proof>
@@ -231,9 +245,6 @@
   <proof prover="0"><result status="valid" time="0.03" steps="20"/></proof>
   </goal>
  </transf>
- </goal>
- <goal name="search_rec&#39;vc" expl="VC for search_rec">
- <proof prover="0"><undone/></proof>
  </goal>
 </theory>
 </file>
