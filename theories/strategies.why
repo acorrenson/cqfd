@@ -65,11 +65,6 @@ module Transform
   use list.Elements
   use set.Fset
 
-  (* lemma test1 :
-    forall p q r. forall env.
-    set_satisfy (Elements.elements (Cons (And p q) env)) r ->
-    set_satisfy (Elements.elements (Cons p (Cons q env))) r*)
-
   lemma weakening :
     forall p r. forall env.
     set_satisfy env r ->
@@ -105,6 +100,18 @@ module Transform
 
   lemma split_correct:
     forall e. stable (Elements.elements (split e)) (Elements.elements e)
+
+  let rec function join (env : list prop)
+    variant { env }
+  = match env with
+    | Nil ->
+      (Nil, Nil)
+    | Cons (Or a b) env' ->
+      (Cons a env'), (Cons b env')
+    | Cons a env' ->
+      let (j1, j2) = join env' in
+      (Cons a j1), (Cons a j2)
+    end
 end
 
 

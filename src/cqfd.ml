@@ -6,10 +6,10 @@ let cqfd =
   match goals Sys.argv.(1) with
   | None -> failwith "parse error"
   | Some l ->
-    List.iter (fun g ->
-        try 
+    List.iteri (fun i g ->
+        try
           if prove [] g |> check_proof []
-          then print_endline "proof found"
-          else print_endline "proof found (but invalid)"
+          then Printf.printf "proof (%d) found\n" i
+          else assert false
         with ProofNotFound -> print_endline "Proof not found"
       ) l

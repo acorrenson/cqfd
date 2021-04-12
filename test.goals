@@ -1,1 +1,9 @@
 Goal (p \/ q) -> (p -> r) -> (q -> r) -> r
+
+Goal (p /\ q) -> p
+
+Goal (p /\ q) -> q
+
+Goal (q /\ not q)
+
+Goal (((p -> q) -> p) -> p)
