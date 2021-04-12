@@ -27,14 +27,53 @@
  <goal name="weakening" proved="true">
  <proof prover="0"><result status="valid" time="0.05" steps="116"/></proof>
  </goal>
- <goal name="split_stable" proved="true">
- <proof prover="0"><result status="valid" time="0.05" steps="88"/></proof>
+ <goal name="mem_sat_stable" proved="true">
+ <proof prover="0"><result status="valid" time="0.05" steps="84"/></proof>
  </goal>
  <goal name="split&#39;vc" expl="VC for split" proved="true">
- <proof prover="0"><result status="valid" time="3.44" steps="16543"/></proof>
+ <proof prover="0"><result status="valid" time="3.44" steps="16889"/></proof>
  </goal>
  <goal name="split_correct" proved="true">
  <proof prover="0"><result status="valid" time="0.04" steps="16"/></proof>
+ </goal>
+ <goal name="mem_sat_stable_join" proved="true">
+ <proof prover="0"><result status="valid" time="0.04" steps="87"/></proof>
+ </goal>
+ <goal name="join&#39;vc" expl="VC for join" proved="true">
+ <transf name="split_vc" proved="true" >
+  <goal name="join&#39;vc.0" expl="variant decrease" proved="true">
+  <proof prover="0"><result status="valid" time="0.04" steps="61"/></proof>
+  </goal>
+  <goal name="join&#39;vc.1" expl="assertion" proved="true">
+  <proof prover="0"><result status="valid" time="0.03" steps="20"/></proof>
+  </goal>
+  <goal name="join&#39;vc.2" expl="postcondition" proved="true">
+  <transf name="split_vc" proved="true" >
+   <goal name="join&#39;vc.2.0" expl="postcondition" proved="true">
+   <proof prover="0"><result status="valid" time="0.03" steps="22"/></proof>
+   </goal>
+   <goal name="join&#39;vc.2.1" expl="postcondition" proved="true">
+   <proof prover="0"><result status="valid" time="0.05" steps="198"/></proof>
+   </goal>
+   <goal name="join&#39;vc.2.2" expl="postcondition" proved="true">
+   <proof prover="1"><result status="valid" time="0.24" steps="41751"/></proof>
+   </goal>
+  </transf>
+  </goal>
+  <goal name="join&#39;vc.3" expl="postcondition" proved="true">
+  <transf name="split_vc" proved="true" >
+   <goal name="join&#39;vc.3.0" expl="postcondition" proved="true">
+   <proof prover="1"><result status="valid" time="0.13" steps="33274"/></proof>
+   </goal>
+   <goal name="join&#39;vc.3.1" expl="postcondition" proved="true">
+   <proof prover="1"><result status="valid" time="0.30" steps="50983"/></proof>
+   </goal>
+   <goal name="join&#39;vc.3.2" expl="postcondition" proved="true">
+   <proof prover="1"><result status="valid" time="0.26" steps="43789"/></proof>
+   </goal>
+  </transf>
+  </goal>
+ </transf>
  </goal>
 </theory>
 <theory name="Strategies" proved="true">

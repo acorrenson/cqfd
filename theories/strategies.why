@@ -17,6 +17,23 @@ module Finders
     | Cons x xs -> if pred x then x else find pred xs
     end
 
+  let rec function rem (h : prop) (l : list prop)
+    variant { l }
+    ensures { not (mem h result) }
+    ensures { forall p. p <> h -> mem p l -> mem p result }
+  = match l with
+    | Nil -> Nil
+    | Cons x xs ->
+      if x == h then rem h xs
+      else Cons x (rem h xs)
+    end
+
+
+  (* lemma remove_weak :
+    forall e h p.
+      set_satisfy (Elements.elements (rem h e)) p ->
+      set_satisfy (Elements.elements e) p *)
+
   (**
     Check if a prop [q] is of the form [h -> p] where
     [h] is an hypothesis
@@ -55,6 +72,12 @@ module Finders
     | _ -> false
     end
 
+  let do_disj (q : prop)
+    ensures { result -> exists a b. q = Or a b }
+  = match q with
+    | Or _ _ -> true
+    | _ -> false
+    end
 end
 
 module Transform
@@ -70,8 +93,11 @@ module Transform
     set_satisfy env r ->
     set_satisfy (add p env) r
 
-  predicate mem_split (e1 : fset prop) (e2 : fset prop)
-  = forall p q. mem (And p q) e1 -> mem p e2 /\ mem q e2
+  (* predicate mem_split (e1 : fset prop) (e2 : fset prop)
+  = forall p q. mem (And p q) e1 -> (mem p e2 /\ mem q e2)
+
+  predicate mem_join (e1 : fset prop) (e2 : fset prop)
+  = forall p q. mem (Or p q) e1 -> (mem p e2 \/ mem q e2) *)
 
   predicate mem_sat (e1 : fset prop) (e2 : fset prop)
   = forall p. mem p e1 -> set_satisfy e2 p
@@ -79,14 +105,12 @@ module Transform
   predicate stable (e1 : fset prop) (e2 : fset prop)
   = forall p. set_satisfy e1 p -> set_satisfy e2 p
 
-  lemma split_stable :
+  lemma mem_sat_stable :
     forall e1 e2.
-      mem_split e1 e2 ->
       mem_sat e2 e1 ->
       stable e2 e1
 
   let rec function split (env : list prop)
-    ensures { mem_split (Elements.elements env) (Elements.elements result) }
     ensures { mem_sat (Elements.elements result) (Elements.elements env) }
     variant { env }
   = match env with
@@ -101,17 +125,46 @@ module Transform
   lemma split_correct:
     forall e. stable (Elements.elements (split e)) (Elements.elements e)
 
+  (* predicate mem_join (e1 : fset prop) (e2 : fset prop)
+  = forall p. mem p e1 -> (mem e2 p \/ set_satisfy e2 p) *)
+
+  predicate stable_join (e1 : fset prop) (e2 : fset prop) (e3 : fset prop)
+  = forall p. (set_satisfy e1 p /\ set_satisfy e2 p) -> set_satisfy e3 p
+
+  (* lemma mem_join_stable_join :
+    forall e1 e2 e3.
+      mem_join e3 e1 e2 ->
+      stable_join e1 e2 e3 *)
+
+  lemma mem_sat_stable_join :
+    forall e1 e2 e3.
+      mem_sat e1 e3 ->
+      mem_sat e2 e3 ->
+      stable_join e1 e2 e3
+
   let rec function join (env : list prop)
+    (* ensures { let (j1, j2) = result in stable_join (Elements.elements j1) (Elements.elements j2) (Elements.elements env) } *)
+    ensures { let (j1, _) = result in mem_sat (Elements.elements env) (Elements.elements j1) }
+    ensures { let (_, j2) = result in mem_sat (Elements.elements env) (Elements.elements j2) }
     variant { env }
   = match env with
     | Nil ->
       (Nil, Nil)
     | Cons (Or a b) env' ->
-      (Cons a env'), (Cons b env')
+      let (j1, j2) = (Cons a env'), (Cons b env') in
+      j1, j2
     | Cons a env' ->
       let (j1, j2) = join env' in
-      (Cons a j1), (Cons a j2)
+      Cons a j1, Cons a j2
     end
+
+    (* lemma join_correct :
+      forall e. let (j1, j2) = join e in
+        stable_join
+          (Elements.elements j1)
+          (Elements.elements j2)
+          (Elements.elements e) *)
+
 end
 
 
@@ -250,6 +303,7 @@ module Strategies
       try
         search_contradiction env p
       with ProofNotFound ->
+      try
         match p with
         | And a b ->
           let pra = prove env a in
@@ -261,6 +315,17 @@ module Strategies
         | Impl a b ->
           Pr_Iimpl (prove (Cons a env) b) p
         | _ -> raise ProofNotFound
-      end end end end
+        end
+      with ProofNotFound ->
+      try
+        let h = find do_disj env in
+        match h with
+        | Or a b ->
+          let pr1 = prove (Cons a env) p in
+          let pr2 = prove (Cons b env) p in
+          Pr_Eor (Pr_axiom h) pr1 pr2 p
+        end
+      with Not_found -> raise ProofNotFound
+      end end end end end
 
 end

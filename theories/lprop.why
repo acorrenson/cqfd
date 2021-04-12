@@ -14,6 +14,7 @@ theory Lprop
 
   let rec (==) (x y : prop) : bool
     ensures { x = y <-> result = True }
+    ensures { x <> y <-> result = False }
     variant { x, y }
   = match x, y with
     | Atom n, Atom m -> n = m
