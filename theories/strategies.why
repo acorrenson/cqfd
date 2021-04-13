@@ -303,7 +303,7 @@ module Strategies
       try
         search_contradiction env p
       with ProofNotFound ->
-      try
+      (* try *)
         match p with
         | And a b ->
           let pra = prove env a in
@@ -316,7 +316,7 @@ module Strategies
           Pr_Iimpl (prove (Cons a env) b) p
         | _ -> raise ProofNotFound
         end
-      with ProofNotFound ->
+      (* with ProofNotFound ->
       try
         let h = find do_disj env in
         match h with
@@ -325,7 +325,7 @@ module Strategies
           let pr2 = prove (Cons b env) p in
           Pr_Eor (Pr_axiom h) pr1 pr2 p
         end
-      with Not_found -> raise ProofNotFound
-      end end end end end
+      with Not_found -> raise ProofNotFound end *)
+      end end end
 
 end

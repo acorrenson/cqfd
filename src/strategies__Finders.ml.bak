@@ -6,13 +6,6 @@ let rec find (pred: Lprop__Lprop.prop -> (bool)) (l: Lprop__Lprop.prop list) :
   | [] -> raise Not_found
   | x :: xs -> if pred x then x else find pred xs
 
-let rec rem (h: Lprop__Lprop.prop) (l: Lprop__Lprop.prop list) :
-  Lprop__Lprop.prop list =
-  match l with
-  | [] -> [] 
-  | x :: xs ->
-    if Lprop__Lprop.infix_eqeq x h then rem h xs else x :: rem h xs
-
 let do_implies (q: Lprop__Lprop.prop) (p: Lprop__Lprop.prop)
                (env: Lprop__Lprop.prop list) : bool =
   match q with
@@ -39,10 +32,5 @@ let do_case (q: Lprop__Lprop.prop) (p: Lprop__Lprop.prop)
     (let h1 = Lprop__Lprop.Impl (a, p) in
      let h2 = Lprop__Lprop.Impl (b, p) in
      Proof__Proof.hypothesis h1 env && Proof__Proof.hypothesis h2 env)
-  | _ -> false
-
-let do_disj (q: Lprop__Lprop.prop) : bool =
-  match q with
-  | Lprop__Lprop.Or (_, _) -> true
   | _ -> false
 
