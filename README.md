@@ -1,6 +1,6 @@
 # cqfd
 
-**Cqfd** is a why3-certified automatic prover for the propositional logic.
+**Cqfd** is a why3-certified automatic prover for propositional logic.
 
 ## Construction
 
